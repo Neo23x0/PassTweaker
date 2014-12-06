@@ -12,17 +12,17 @@ Into this:
 
 Usage
 ===========
-usage: passtweaker.py [-h] -f wordlist [-o new-wordlist] [--intense] [--debug]
+    usage: passtweaker.py [-h] -f wordlist [-o new-wordlist] [--intense] [--debug]
 
-PassTweaker
+    PassTweaker
 
-optional arguments:
-  -h, --help       show this help message and exit
-  -f wordlist      File to transform
-  -o new-wordlist  Output file
-  --intense        Try even to improve words that already match the
-                   requirements
-  --debug          Debug output
+    optional arguments:
+       -h, --help       show this help message and exit
+       -f wordlist      File to transform
+       -o new-wordlist  Output file
+       --intense        Try even to improve words that already match the
+                        requirements
+       --debug          Debug output
 
 
 Screenshot
