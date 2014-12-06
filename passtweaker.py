@@ -12,16 +12,28 @@ import traceback
 
 def parse_words(words_file):
 
-    # Read the wordlist
-    with open(words_file, 'r') as file:
-        lines = [line.rstrip() for line in file]
+    print "Reading wordlist '%s' ... " % words_file
+
+    try:
+        # Read the wordlist
+        with open(words_file, 'r') as file:
+            lines = [line.rstrip() for line in file]
+
+        print "Read wordlist '%s' with %s words." % ( words_file, len(lines) )
+
+        if args.debug:
+            print "BEFORE"
+            print lines
+
+    except:
+        traceback.print_exc()
 
     # Loop through the words
     for word in lines:
 
         # Initial Form
-        if args.debug:
-            print "FROM: %s" % word
+        #if args.debug:
+        #    print "FROM: %s" % word
 
         # Check if it matches the requirements
         if tryAppend(word):
@@ -45,21 +57,41 @@ def parse_words(words_file):
 
         # Fill up with single char
         if num_chars == 7:
-            new_word = word + "!"
-            tryAppend(new_word)
-            new_word = word + "$"
-            tryAppend(new_word)
-            new_word = word + "%"
-            tryAppend(new_word)
-            new_word = word + "?"
-            tryAppend(new_word)
-            new_word = word + "1"
-            tryAppend(new_word)
+            for new_word in add_special_chars(word):
+                tryAppend(new_word)
 
         # If 8 characters used try to replace chars with numbers
         if num_chars == 8:
             for new_word in replace_chars(word):
                 tryAppend(new_word)
+
+            if args.intense:
+                # Remove one char and add a special character
+                for new_word in add_special_chars(word[:7]):
+                    tryAppend(new_word)
+
+        # Append year numbers and special chars
+        if args.intense:
+            # If word has 4 or 6 chars try to append a year
+            if num_chars == 6:
+                for new_word in (add_year_numbers(word, chars=2)):
+                    tryAppend(new_word)
+            if num_chars == 4:
+                for new_word in (add_year_numbers(word, chars=4)):
+                    tryAppend(new_word)
+
+             # If word has 3 or 5 chars try to append a year and special character
+            if num_chars == 5:
+                for new_word in (add_year_numbers(word, chars=2)):
+                    for newer_word in (add_special_chars(new_word)):
+                        tryAppend(newer_word)
+            if num_chars == 3:
+                for new_word in (add_year_numbers(word, chars=4)):
+                    for newer_word in (add_special_chars(new_word)):
+                        tryAppend(newer_word)
+
+        # If word is longer than 8 chars - cut it and add 1-2 extra chars
+
 
 def tryAppend(word):
     if meets_requirements(word):
@@ -77,9 +109,11 @@ def tryAppend(word):
 
     return 0
 
+
 def append_word(word):
     if not word in complex_words:
         complex_words.append(word)
+
 
 def fill_up_inc(word):
     i = 1
@@ -95,6 +129,7 @@ def fill_up_dec(word):
         i -= 1
     return word
 
+
 def replace_chars(word):
     yield word.replace("a", "@", 1)
     yield word.replace("a", "@")
@@ -106,6 +141,33 @@ def replace_chars(word):
     yield word.replace("s", "5")
     yield word.replace("i", "1", 1)
     yield word.replace("i", "1")
+
+
+def add_special_chars(word):
+
+    special_chars = ['!', '$', '$', '?', '+', '!', '%']
+
+    for char in special_chars:
+        yield word + char
+
+def add_year_numbers(word, chars=2):
+
+    startYear = 1970
+
+    if chars == 2:
+        startYearShort = int(str(startYear)[-2:])
+        for year in (range(startYearShort,99)):
+            yield(word+str(year))
+        for year in range(0,15):
+            if len(str(year)) == 1:
+                yield(word + "0" + str(year))
+            else:
+                yield(word + str(year))
+
+    if chars == 4:
+        for year in (range(startYear,2015)):
+            yield(word+str(year))
+
 
 def meets_requirements(word):
 
@@ -122,8 +184,8 @@ def meets_requirements(word):
     if not re.search(r'[0-9\W]', word):
         return 0
 
-    if args.debug:
-     print "TO: %s" % word
+    #if args.debug:
+        #print "TO: %s" % word
 
     # Contains all necessary chars
     return 1
@@ -135,7 +197,7 @@ def printWelcome():
     print "  "
     print "  by Florian Roth"
     print "  December 2014"
-    print "  Version 0.1"
+    print "  Version 0.2"
     print " "
     print "###############################################################################"
 
@@ -160,9 +222,16 @@ if __name__ == '__main__':
     parse_words(args.f)
 
     if args.debug:
+        print "AFTER"
         print complex_words
 
     # Write complex words
-    outfile = open(args.o, "w")
-    outfile.write("\n".join(complex_words))
-    outfile.close()
+    try:
+        outfile = open(args.o, "w")
+        outfile.write("\n".join(complex_words))
+        outfile.close()
+
+        print "%s words written to improved wordlist '%s'." % ( len(complex_words), args.o)
+
+    except:
+        traceback.print_exc()
