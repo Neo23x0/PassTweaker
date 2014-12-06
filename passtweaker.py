@@ -144,8 +144,8 @@ if __name__ == '__main__':
 
     # Parse Arguments
     parser = argparse.ArgumentParser(description='PassTweaker')
-    parser.add_argument('-f', help='File to transform')
-    parser.add_argument('-o', help='Output file', default="complex-pass.txt")
+    parser.add_argument('-f', metavar="wordlist", help='File to transform', required=True)
+    parser.add_argument('-o', metavar="new-wordlist", help='Output file', default="complex-pass.txt")
     parser.add_argument('--intense', action='store_true', default=False, help='Try even to improve words that already match the requirements')
     parser.add_argument('--debug', action='store_true', default=False, help='Debug output')
 
