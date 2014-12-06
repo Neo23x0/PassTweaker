@@ -27,4 +27,4 @@ Usage
 
 Screenshot
 ============
-![Alt text](/screens/ishot-141205-195328.png?raw=true "Screenshot")
+![Alt text](/screens/ishot-141206-093747.png?raw=true "Screenshot")
