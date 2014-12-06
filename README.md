@@ -12,10 +12,6 @@ Into this:
 
 Usage
 ===========
-<<<<<<< HEAD
-
-=======
->>>>>>> FETCH_HEAD
 usage: passtweaker.py [-h] -f wordlist [-o new-wordlist] [--intense] [--debug]
 
 PassTweaker
